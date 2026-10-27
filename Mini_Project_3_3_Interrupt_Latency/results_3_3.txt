@@ -1,0 +1,43 @@
+bottom-half slice (preemption granularity) = 0.25 ms; durations: configs 20.0 s, sweep points 10.0 s
+max* = maximum after excluding occurrences that overlap a host stall (the OS descheduling the simulator)
+================================================================================================
+A baseline (short top halves): CPU load 49.1%
+   S1_sensor   period  10.0 ms  TH  0.2 ms  BH  2.0 ms  priority 3  analytic worst response   2.85 ms
+   S2_network  period  23.0 ms  TH  0.2 ms  BH  3.0 ms  priority 2  analytic worst response   5.85 ms
+   S3_logger   period  47.0 ms  TH  0.2 ms  BH  6.0 ms  priority 1  analytic worst response  14.05 ms
+   host wake-up jitter of the source threads: median 174 us, max 17971 us
+   host stalls detected (work unit > 0.5 ms longer than requested): 85, longest 12.3 ms
+   source         n | IRQ lat mean     p95     max   max* |    TH |  resp min   mean    p95    max   max* |  bound | preempted | stall-hit
+   S1_sensor   1945 |        0.068   0.196   1.655   1.66 |  0.20 |      2.22   2.36   2.56  14.43   6.31 |   2.85 |  218/1945 | 34
+   S2_network   859 |        0.090   0.211   6.378   6.38 |  0.20 |      3.23   4.35   5.77  15.77  11.66 |   5.85 |  270/859  | 37
+   S3_logger    424 |        0.086   0.228   1.960   1.63 |  0.20 |      6.27  10.31  14.22  39.75  14.73 |  14.05 |  322/424  | 27
+================================================================================================
+B long top half on LOW-priority S3: CPU load 49.1%
+   S1_sensor   period  10.0 ms  TH  0.2 ms  BH  2.0 ms  priority 3  analytic worst response   8.65 ms
+   S2_network  period  23.0 ms  TH  0.2 ms  BH  3.0 ms  priority 2  analytic worst response  13.85 ms
+   S3_logger   period  47.0 ms  TH  6.0 ms  BH  0.2 ms  priority 1  analytic worst response  14.05 ms
+   host wake-up jitter of the source threads: median 177 us, max 32142 us
+   host stalls detected (work unit > 0.5 ms longer than requested): 80, longest 8.5 ms
+   source         n | IRQ lat mean     p95     max   max* |    TH |  resp min   mean    p95    max   max* |  bound | preempted | stall-hit
+   S1_sensor   1945 |        0.404   3.406   5.923   5.92 |  0.21 |      2.23   3.01   8.14  11.95   9.81 |   8.65 |  227/1945 | 52
+   S2_network   858 |        0.494   3.859   5.963   5.96 |  0.21 |      3.24   5.61  11.70  18.99  14.31 |  13.85 |  316/858  | 32
+   S3_logger    423 |        0.100   0.246   3.373   3.37 |  6.02 |      6.23  10.03  14.00  18.95  14.79 |  14.05 |    0/423  | 18
+================================================================================================
+C long top half on HIGH-priority S1: CPU load 49.1%
+   S1_sensor   period  10.0 ms  TH  2.0 ms  BH  0.2 ms  priority 3  analytic worst response   2.85 ms
+   S2_network  period  23.0 ms  TH  0.2 ms  BH  3.0 ms  priority 2  analytic worst response   5.85 ms
+   S3_logger   period  47.0 ms  TH  0.2 ms  BH  6.0 ms  priority 1  analytic worst response  14.05 ms
+   host wake-up jitter of the source threads: median 181 us, max 15641 us
+   host stalls detected (work unit > 0.5 ms longer than requested): 57, longest 15.8 ms
+   source         n | IRQ lat mean     p95     max   max* |    TH |  resp min   mean    p95    max   max* |  bound | preempted | stall-hit
+   S1_sensor   1948 |        0.078   0.196   3.735   3.73 |  2.01 |      2.21   2.33   2.51   6.15   6.15 |   2.85 |    0/1948 | 26
+   S2_network   860 |        0.281   1.665   2.210   2.21 |  0.21 |      3.23   4.31   5.71  21.41   6.08 |   5.85 |  279/860  | 26
+   S3_logger    424 |        0.274   1.532   4.122   4.12 |  0.20 |      6.26  10.00  14.07  34.99  16.31 |  14.05 |  323/424  | 18
+================================================================================================
+Sweep: S1 period (arrival rate) vs S3 (lowest priority) response latency, baseline durations
+   S1 period 20.0 ms (load  38.1%): S3 response mean     8.89  p95    11.93  max*    76.23  (raw max    76.23) ms; analytic bound   11.85 ms; S1 max* 66.46 ms
+   S1 period 10.0 ms (load  49.1%): S3 response mean    10.08  p95    14.36  max*    14.67  (raw max    35.47) ms; analytic bound   14.05 ms; S1 max* 3.17 ms
+   S1 period  6.0 ms (load  63.8%): S3 response mean    12.47  p95    16.55  max*    37.85  (raw max    37.85) ms; analytic bound   16.25 ms; S1 max* 24.61 ms
+   S1 period  4.0 ms (load  82.1%): S3 response mean    17.73  p95    21.61  max*    22.72  (raw max    45.19) ms; analytic bound   22.85 ms; S1 max* 6.93 ms
+   S1 period  3.5 ms (load  90.0%): S3 response mean    21.84  p95    29.74  max*    32.05  (raw max    52.64) ms; analytic bound   34.85 ms; S1 max* 5.91 ms
+   S1 period  3.2 ms (load  95.9%): S3 response mean    27.52  p95    35.15  max*    46.21  (raw max    46.21) ms; analytic bound   41.45 ms; S1 max* 5.13 ms

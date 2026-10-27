@@ -1,0 +1,1 @@
+S1 period 2.6 ms, nominal CPU load 111.7% (completed work 100.9% of 10 s, S1 completed 3364 jobs): S3 completed 212 jobs; response mean 1527 ms, p95 2740 ms, max 2893 ms; first three responses [64.7, 83.8, 88.6] ms; mean response of S3 jobs asserted in each 2.5 s quarter of the run [578, 1575, 2492, 1463] ms (the backlog keeps growing while the overload lasts)
