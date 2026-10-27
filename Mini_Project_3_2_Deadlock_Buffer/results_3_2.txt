@@ -1,0 +1,44 @@
+==============================================================================
+1. FLAWED version: producers buffer_lock -> stats_lock, consumers stats_lock -> buffer_lock
+   3 producers, 3 consumers, capacity 5, 20000 items, 0.1 ms work while holding the first lock
+   trial 1: deadlocked=True  produced=1 consumed=0  last progress at t=0.101 s
+   WATCHDOG: no progress for 2.0 s (produced=1, consumed=0 of 20000) -> DEADLOCK
+   lock-wait snapshot:
+      C0: holding ['stats_lock'], waiting for buffer_lock
+      C1: holding -, waiting for stats_lock
+      C2: holding -, waiting for stats_lock
+      P0: holding -, waiting for buffer_lock
+      P1: holding -, waiting for buffer_lock
+      P2: holding ['buffer_lock'], waiting for stats_lock
+   trial 2: deadlocked=True  produced=1 consumed=0  last progress at t=0.101 s
+   trial 3: deadlocked=True  produced=0 consumed=0  last progress at t=0.102 s
+   trial 4: deadlocked=True  produced=0 consumed=0  last progress at t=0.101 s
+   trial 5: deadlocked=True  produced=0 consumed=0  last progress at t=0.101 s
+   deadlocked in 5/5 trials
+   Same flawed code WITHOUT the hold window (hold_ms = 0), 10 trials of 3000 items:
+   trial 1: completed (consumed 3000)
+   trial 2: completed (consumed 3000)
+   trial 3: completed (consumed 3000)
+   trial 4: completed (consumed 3000)
+   trial 5: completed (consumed 3000)
+   trial 6: completed (consumed 3000)
+   trial 7: completed (consumed 3000)
+   trial 8: completed (consumed 3000)
+   trial 9: completed (consumed 3000)
+   trial 10: completed (consumed 3000)
+   deadlocked in 0/10 trials without the hold window
+==============================================================================
+2. CORRECTED version: every task takes buffer_lock -> stats_lock (same load, hold 0.1 ms)
+   trial 1: deadlocked=False consumed=20000/20000 in 11.17 s (1791 items/s), watchdog silent
+   trial 2: deadlocked=False consumed=20000/20000 in 10.95 s (1826 items/s), watchdog silent
+   trial 3: deadlocked=False consumed=20000/20000 in 11.03 s (1813 items/s), watchdog silent
+   trial 4: deadlocked=False consumed=20000/20000 in 10.97 s (1823 items/s), watchdog silent
+   trial 5: deadlocked=False consumed=20000/20000 in 10.97 s (1823 items/s), watchdog silent
+==============================================================================
+3. Corrected version, capacity sweep: 3 P / 3 C, 3000 items, mean 1 ms produce and 1 ms consume (exponential), 3 runs each
+   capacity   1: throughput    2082 +/-   38 items/s, producer wait  0.305 ms/item, consumer wait  0.322 ms/item, run time 1.44 s
+   capacity   2: throughput    2222 +/-   42 items/s, producer wait  0.216 ms/item, consumer wait  0.225 ms/item, run time 1.35 s
+   capacity   5: throughput    2379 +/-  109 items/s, producer wait  0.122 ms/item, consumer wait  0.134 ms/item, run time 1.26 s
+   capacity  10: throughput    2480 +/-   95 items/s, producer wait  0.082 ms/item, consumer wait  0.088 ms/item, run time 1.21 s
+   capacity  25: throughput    2541 +/-  107 items/s, producer wait  0.039 ms/item, consumer wait  0.048 ms/item, run time 1.18 s
+   capacity  50: throughput    2576 +/-   78 items/s, producer wait  0.017 ms/item, consumer wait  0.030 ms/item, run time 1.17 s

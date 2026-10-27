@@ -1,0 +1,53 @@
+Python 3.13.17 on linux, 2 CPU(s)
+==============================================================================
+Steps 1-4 and lab task 1: lost-update race, unprotected versus mutex-protected
+  race_demo  threads= 5 run 1: final= 1002 expected=5000 lost= 3998 (80.0%)  0.17s
+  race_demo  threads= 5 run 2: final= 1000 expected=5000 lost= 4000 (80.0%)  0.18s
+  race_demo  threads= 5 run 3: final= 1000 expected=5000 lost= 4000 (80.0%)  0.18s
+  race_demo  threads= 5 run 4: final= 1001 expected=5000 lost= 3999 (80.0%)  0.17s
+  race_demo  threads= 5 run 5: final= 1003 expected=5000 lost= 3997 (79.9%)  0.17s
+  race_fixed threads= 5 run 1: final= 5000 expected=5000 lost=    0 ( 0.0%)  0.93s
+  race_fixed threads= 5 run 2: final= 5000 expected=5000 lost=    0 ( 0.0%)  0.93s
+  race_fixed threads= 5 run 3: final= 5000 expected=5000 lost=    0 ( 0.0%)  0.95s
+  race_demo  threads=10 run 1: final= 1002 expected=10000 lost= 8998 (90.0%)  0.18s
+  race_demo  threads=10 run 2: final= 1003 expected=10000 lost= 8997 (90.0%)  0.19s
+  race_demo  threads=10 run 3: final= 1000 expected=10000 lost= 9000 (90.0%)  0.20s
+  race_demo  threads=10 run 4: final= 1005 expected=10000 lost= 8995 (90.0%)  0.20s
+  race_demo  threads=10 run 5: final= 1005 expected=10000 lost= 8995 (90.0%)  0.18s
+  race_fixed threads=10 run 1: final=10000 expected=10000 lost=    0 ( 0.0%)  1.95s
+  race_fixed threads=10 run 2: final=10000 expected=10000 lost=    0 ( 0.0%)  1.85s
+  race_fixed threads=10 run 3: final=10000 expected=10000 lost=    0 ( 0.0%)  1.90s
+==============================================================================
+Steps 5-6: bounded queue (maxsize 5, 20 items, producer work 2 ms per item), 3 runs each
+  maxsize= 5 consumer_delay= 0.0 ms | latency min   0.047  avg   0.110  max   0.181 ms | producer blocked in  0/20 puts,    0.0 ms total
+  maxsize= 5 consumer_delay= 0.0 ms | latency min   0.061  avg   0.103  max   0.175 ms | producer blocked in  0/20 puts,    0.0 ms total
+  maxsize= 5 consumer_delay= 0.0 ms | latency min   0.076  avg   0.105  max   0.190 ms | producer blocked in  0/20 puts,    0.0 ms total
+  maxsize= 5 consumer_delay= 6.0 ms | latency min   0.133  avg  26.427  max  34.870 ms | producer blocked in 12/20 puts,   46.0 ms total
+  maxsize= 5 consumer_delay= 6.0 ms | latency min   0.093  avg  26.579  max  35.332 ms | producer blocked in 12/20 puts,   46.5 ms total
+  maxsize= 5 consumer_delay= 6.0 ms | latency min   0.044  avg  26.513  max  35.049 ms | producer blocked in 12/20 puts,   46.3 ms total
+Lab task 4: average latency versus maxsize (slow consumer 6 ms/item, and fast consumer)
+  consumer_delay=  0 ms maxsize= 1: avg latency    0.10 ms, max    0.17 ms, producer blocked in  0.0/20 puts (mean of 3 runs)
+  consumer_delay=  0 ms maxsize= 2: avg latency    0.11 ms, max    0.19 ms, producer blocked in  0.0/20 puts (mean of 3 runs)
+  consumer_delay=  0 ms maxsize= 5: avg latency    0.10 ms, max    0.18 ms, producer blocked in  0.0/20 puts (mean of 3 runs)
+  consumer_delay=  0 ms maxsize=10: avg latency    0.13 ms, max    2.23 ms, producer blocked in  0.0/20 puts (mean of 3 runs)
+  consumer_delay=  0 ms maxsize=20: avg latency    0.13 ms, max    0.97 ms, producer blocked in  0.0/20 puts (mean of 3 runs)
+  consumer_delay=  6 ms maxsize= 1: avg latency    9.20 ms, max   10.35 ms, producer blocked in 18.0/20 puts (mean of 3 runs)
+  consumer_delay=  6 ms maxsize= 2: avg latency   14.27 ms, max   16.52 ms, producer blocked in 16.0/20 puts (mean of 3 runs)
+  consumer_delay=  6 ms maxsize= 5: avg latency   26.45 ms, max   34.90 ms, producer blocked in 12.0/20 puts (mean of 3 runs)
+  consumer_delay=  6 ms maxsize=10: avg latency   36.22 ms, max   65.79 ms, producer blocked in  3.7/20 puts (mean of 3 runs)
+  consumer_delay=  6 ms maxsize=20: avg latency   37.39 ms, max   76.33 ms, producer blocked in  0.0/20 puts (mean of 3 runs)
+==============================================================================
+Steps 7-8 and lab task 2: counting semaphore, 8 tasks, same hold times for every count
+  Semaphore(1): max holders 1, tasks that waited 7/8, mean wait  153.6 ms, max wait  299.8 ms, per-task waits ms [274.0, 219.8, 168.9, 92.0, 51.9, 299.8, 122.5, 0.0]
+  Semaphore(3): max holders 3, tasks that waited 5/8, mean wait   38.8 ms, max wait   92.4 ms, per-task waits ms [92.4, 38.3, 46.2, 51.6, 82.1, 0.0, 0.0, 0.0]
+  Semaphore(6): max holders 6, tasks that waited 2/8, mean wait    8.6 ms, max wait   38.3 ms, per-task waits ms [30.4, 38.3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  hold times ms [25.4, 53.9, 50.6, 30.2, 39.8, 38.0, 46.1, 51.5]
+==============================================================================
+Step 9: dispatch latency, 3 runs of 200 iterations
+  run 1: min   72.3  mean   93.2  median   85.8  p95  121.8  max (worst-case observed)   362.6 us
+  run 2: min   58.0  mean   98.3  median   82.4  p95  135.8  max (worst-case observed)   661.7 us
+  run 3: min   88.4  mean  113.2  median  103.9  p95  173.4  max (worst-case observed)   336.7 us
+==============================================================================
+Lab task 3: livelock
+  lock-step back-off: 2000 rounds in 0.47s, retries T1=2000 T2=2000, work done T1=0/50 T2=0/50 -> livelock
+  random back-off  : 0.04s, retries T1=21 T2=19, work done T1=50/50 T2=50/50

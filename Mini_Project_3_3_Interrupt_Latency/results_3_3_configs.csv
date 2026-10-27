@@ -1,0 +1,10 @@
+config,source,n,irq_min,irq_mean,irq_max,irq_p95,th_mean,resp_min,resp_mean,resp_max,resp_p95,preempted,affected_by_stall,irq_max_clean,resp_max_clean,rta_bound_ms
+A baseline (short top halves),S1_sensor,1945,0.0066,0.068,1.6552,0.1958,0.2021,2.2205,2.3596,14.4291,2.5586,218,34,1.6552,6.3079,2.85
+A baseline (short top halves),S2_network,859,0.0064,0.0903,6.3782,0.2107,0.2036,3.2292,4.3504,15.7717,5.7713,270,37,6.3782,11.6566,5.85
+A baseline (short top halves),S3_logger,424,0.0136,0.0858,1.9604,0.2278,0.2022,6.2689,10.3057,39.7499,14.2214,322,27,1.6322,14.7288,14.05
+B long top half on LOW-priority S3,S1_sensor,1945,0.0072,0.4045,5.9229,3.4064,0.2087,2.2263,3.0109,11.9497,8.1367,227,52,5.9229,9.809,8.65
+B long top half on LOW-priority S3,S2_network,858,0.0075,0.4936,5.9633,3.8586,0.2061,3.2398,5.6058,18.9945,11.6989,316,32,5.9633,14.3052,13.85
+B long top half on LOW-priority S3,S3_logger,423,0.0127,0.0996,3.3726,0.246,6.0219,6.2297,10.0278,18.9484,14.0024,0,18,3.3726,14.7909,14.05
+C long top half on HIGH-priority S1,S1_sensor,1948,0.0103,0.0776,3.7346,0.1958,2.0067,2.2147,2.328,6.1461,2.5052,0,26,3.7346,6.1461,2.85
+C long top half on HIGH-priority S1,S2_network,860,0.0104,0.2812,2.2099,1.6652,0.2081,3.2324,4.3074,21.4144,5.712,279,26,2.2099,6.0816,5.85
+C long top half on HIGH-priority S1,S3_logger,424,0.0064,0.2741,4.122,1.532,0.2039,6.2597,9.9972,34.9903,14.0713,323,18,4.122,16.307,14.05
